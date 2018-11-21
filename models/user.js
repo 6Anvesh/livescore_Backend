@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 let Schema = mongoose.Schema;
 var userSchema = new Schema({
-    name:{
+    username:{
         type:String,
         trim:true,
         default:''
@@ -11,12 +11,7 @@ var userSchema = new Schema({
         trim:true,
         default:''
     },
-    phone:{
-        type:String,
-        trim:true,
-        default:''
-    },
-    address:{
+    phonenumber:{
         type:String,
         trim:true,
         default:''
