@@ -2,11 +2,13 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwtService = require("../configure/auth");
 let User = require("../models/user");
+const redis=require('./redisOperations');
 module.exports = {
   signup: async (req, res) => {
     console.log("Signup", req.body);
     try {
-      let data = JSON.parse(JSON.stringify(req.body));
+      console.log("signup");
+ let data = JSON.parse(JSON.stringify(req.body));
       let useremail = await User.find({ email: data.email }).count();
       if (!useremail) {
         var user = new User(data);
@@ -23,21 +25,24 @@ module.exports = {
   },
   login: async (req, res) => {
     try {
-      console.log(req.body);
-      let data = JSON.parse(JSON.stringify(req.body));
-      const user = await User.find({ email: data.email });
-      if (user.length) {
-        console.log(data.password, user);
-        if (bcrypt.compareSync(data.password, user[0].password))
-          return res.json({
-            success: "success",
-            token: jwtService.createToken(user[0]),
-            _id: user[0]._id
-          });
-        else throw new Error("Authenticated user not found!");
-      } else {
-        throw new Error("Authenticated user not found!");
-      }
+      const remainingCount= req.rateLimit && await req.rateLimit();
+      console.log("login",remainingCount)
+           return res.json({ success: "false" });
+      // console.log(req.body);
+      // let data = JSON.parse(JSON.stringify(req.body));
+      // const user = await User.find({ email: data.email });
+      // if (user.length) {
+      //   console.log(data.password, user);
+      //   if (bcrypt.compareSync(data.password, user[0].password))
+      //     return res.json({
+      //       success: "success",
+      //       token: jwtService.createToken(user[0]),
+      //       _id: user[0]._id
+      //     });
+      //   else throw new Error("Authenticated user not found!");
+      // } else {
+      //   throw new Error("Authenticated user not found!");
+      // }
     } catch (error) {
       console.log("error", error);
     }
