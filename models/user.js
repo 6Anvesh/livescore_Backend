@@ -20,6 +20,11 @@ var userSchema = new Schema({
         type:String,
         trim:true,
         default:''
+    },
+    followList:{
+        type:String,
+        trim:true,
+        default:[]
     }
 })
 
