@@ -3,6 +3,9 @@ const bcrypt = require("bcrypt");
 const jwtService = require("../configure/auth");
 let User = mongoose.model("Usermodel");
 const tweetModel=mongoose.model("tweetModel");
+const countersModel=mongoose.model("Counters");
+const productsModel=mongoose.model("Products");
+
 const redis=require('./redisOperations');
 module.exports = {
   checkuserExists:async(req,res)=>{
@@ -106,5 +109,37 @@ return  res.json({ success: count?true:false });
     } catch (error) {
       console.log("error", error);
     }
+  },
+  tryFunction: async (req, res) => {
+    try {
+console.log(Boolean(req.params['check']),req.params)
+      if(Boolean(req.params['check'])=="true"){
+        const doc=new countersModel({_id:"product_id",count:0})
+       await doc.save();
+      }
+    // console.log("count",getuniqueNumber("product_id"))
+    let num=await getuniqueNumber("product_id");
+    console.log("num",num)
+     const pdoc= new productsModel({_id:num.toString(),product_name:"product"+req.params["num"]})
+    await pdoc.save();
+
+     const docs=await  products
+     Model.find({});
+      return res.json({
+        success: true,
+        docs:docs
+      });
+    } catch (error) {
+      console.log("error", error);
+    }
   }
+
+  
 };
+
+async function getuniqueNumber(id){
+// console.log(id)
+const docs=await countersModel.findOneAndUpdate({_id:id},{$inc:{count:1}});
+// console.log("docs",docs)
+return docs.count;
+}

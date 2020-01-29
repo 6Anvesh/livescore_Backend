@@ -9,6 +9,6 @@ router.post("/tweet", [user.tweetSave]);
 router.get("/alltweets/:username", [user.alltweets]);
 router.get("/searchtweets/:username", [user.searchtweets]);
 router.get("/searchHashtag/:hashtag", [user.searchHashtag]);
-
+router.get("/tryfunction/:check/:num", [user.tryFunction]);
 
 module.exports = router;
